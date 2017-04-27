@@ -34,14 +34,14 @@ class GVForm {
                         delegate?.formError(errorMessage: errorMessage)
                     }
                     else{
-                        delegate?.formError(errorMessage: "\(field.name) is not valid!")
+                        delegate?.formError(errorMessage: "\(field.name) is empty!")
                     }
 
                     return
                 }
             }
             
-            if field.validade {
+            if field.validate {
                 
                 if let regex = field.regexValidation{
                     

@@ -8,14 +8,43 @@
 
 import UIKit
 
-class GVTextField: UITextField {
 
+enum GVTextFieldType {
+    case email
+    case tel
+    case gere
+}
+
+
+class GVTextField: UITextField {
+    
     var required = false
-    var validade = true
+    var validate = true
     var requiredErrorMessage : String?
     var validateErrorMessage : String?
     var regexValidation : String?
-    var name : String?
+    var name : String = "Field"
+    
+    func setType(_ type : GVTextFieldType){
+        
+        switch type {
+        case .email:
+            self.email()
+            break
+            
+        default:
+            
+            break
+            
+        }
+    }
+    
+    private func email(){
+        
+        self.required = true
+        self.regexValidation = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        self.name = "Email"
+    }
     
     required override init(frame: CGRect) {
         super.init(frame: frame)
