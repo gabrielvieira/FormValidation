@@ -9,8 +9,9 @@
 import Foundation
 
 protocol GVFormDelegate {
-    func formValid()
-    func formError( errorMessage : String )
+    
+    func formDidValidated(_ form: GVTextField)
+    func formDidError(_ form:GVTextField, didFailWith error: NSError)
 }
 
 class GVForm {
@@ -22,47 +23,75 @@ class GVForm {
         self.fields = fields
     }
     
-    func validate(){
-    
-        for field in self.fields{
+    fileprivate func createError(textField:GVTextField, message:String) -> NSError {
         
-            if field.required {
+        if (textField.setup?.name) != nil {
+            return NSError(domain: (textField.setup?.name)!, code: 42, userInfo: ["message":message])
+        }
+        
+        return NSError(domain: "invalid textfield", code: 666, userInfo: ["message":message])
+    }
+    
+    func validate() {
+    
+        for field in self.fields {
+        
+            let genericError = self.createError(textField: field, message: "Invalid TextField")
+            
+            guard let required = field.setup?.required else {
+                self.delegate?.formDidError(field, didFailWith: genericError)
+                return
+            }
+            
+            guard let validate = field.setup?.validate else {
+                self.delegate?.formDidError(field, didFailWith: genericError)
+                return
+            }
+            
+            if required {
                 
                 if field.text == "" {
                     
-                    if let errorMessage = field.requiredErrorMessage{
-                        delegate?.formError(errorMessage: errorMessage)
+                    if (field.setup?.requiredErrorMessage) != nil {
+                        
+                        let error = self.createError(textField: field, message: (field.setup?.requiredErrorMessage)!)
+                        
+                        delegate?.formDidError(field, didFailWith: error)
                     }
                     else{
-                        delegate?.formError(errorMessage: "\(field.name) is not valid!")
+                        let error = self.createError(textField: field, message: "\(String(describing: field.setup?.name)) is not valid!")
+                        delegate?.formDidError(field, didFailWith: error)
                     }
 
                     return
                 }
             }
             
-            if field.validade {
+            if validate {
                 
-                if let regex = field.regexValidation{
+                if let regex = field.setup?.regexValidation{
                     
                     let validText = NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: field.text)
                     
                     if !validText{
                         
-                        if let errorMessage = field.validateErrorMessage{
-                            delegate?.formError(errorMessage: errorMessage)
+                        if (field.setup?.validateErrorMessage) != nil {
+                            let error = self.createError(textField: field, message: (field.setup?.validateErrorMessage)!)
+                            delegate?.formDidError(field, didFailWith: error)
                         }
                         else{
-                            delegate?.formError(errorMessage: "\(field.name) is not valid!")
+                            let error = self.createError(textField: field, message: "\(String(describing: field.setup?.name)) is not valid!")
+                            delegate?.formDidError(field, didFailWith: error)
                         }
                         
                         return
                     }
                 }
             }
-        }
+            
+        delegate?.formDidValidated(field)
         
-        delegate?.formValid()
+        }
     }
     
     func clear(){

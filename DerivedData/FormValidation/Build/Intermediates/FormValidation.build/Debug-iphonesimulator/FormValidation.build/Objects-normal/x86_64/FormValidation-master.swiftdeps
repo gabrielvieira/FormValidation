@@ -1,0 +1,8 @@
+version: "Apple Swift version 3.1 (swiftlang-802.0.51 clang-802.0.41)"
+options: "0df2ee7d92b7cb1472e4813bc9e50c72"
+build_time: [547060663, 527493000]
+inputs:
+  "/Users/ezequielfranca/Desktop/Pessoal/FormValidation/FormValidation/GVForm.swift": [547060659, 0]
+  "/Users/ezequielfranca/Desktop/Pessoal/FormValidation/FormValidation/ViewController.swift": [547056050, 0]
+  "/Users/ezequielfranca/Desktop/Pessoal/FormValidation/FormValidation/GVTextField.swift": [547060610, 0]
+  "/Users/ezequielfranca/Desktop/Pessoal/FormValidation/FormValidation/AppDelegate.swift": [547053735, 0]
