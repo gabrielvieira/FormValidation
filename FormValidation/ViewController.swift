@@ -8,23 +8,18 @@
 
 import UIKit
 
-class ViewController: UIViewController , GVFormDelegate {
+class ViewController: UIViewController {
 
     var form : GVForm?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let gere = GVTextField.init(frame: CGRect.init(x: 100, y: 100, width: 100, height: 100))
+        let setup = TextFieldSetup(name: "Email", requiredErrorMessage: "gere requerido", validateErrorMessage: "digita certo caralho", regexValidation: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}")
+        
+        let gere = GVTextField.init(setup: setup, frame: CGRect.init(x: 100, y: 100, width: 100, height: 100))
         gere.backgroundColor = .red
-        
-        gere.required = true
-        gere.regexValidation = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        gere.requiredErrorMessage = "gere requerido"
-        gere.validateErrorMessage = "digita certo caralho"
-//        gere.validade = false
-        gere.name = "Email"
-        
+                
         self.form = GVForm.init(fields: [gere])
         self.form?.delegate = self
         
@@ -39,15 +34,29 @@ class ViewController: UIViewController , GVFormDelegate {
     @IBAction func click(_ sender: Any) {
         form?.validate()
     }
+}
+
+
+// Padrao Apple de Delegate
+
+extension ViewController : GVFormDelegate {
     
-    func formValid(){
-        print("Form valido")
-        form?.clear()
+    func formDidValidated(_ form: GVTextField) {
+        print(form.setup?.name)
     }
     
-    func formError( errorMessage : String ){
-        print("form invalido")
-        print(errorMessage)
+    func formDidError(_ form: GVTextField, didFailWith error: NSError) {
+        print(error.userInfo["message"]!)
+    }
+}
+
+
+
+
+extension ViewController : UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

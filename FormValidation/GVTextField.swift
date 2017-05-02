@@ -8,18 +8,39 @@
 
 import UIKit
 
+public struct TextFieldSetup {
+    
+    var required = false
+    var validate = true
+    var requiredErrorMessage : String
+    var validateErrorMessage : String
+    var regexValidation : String
+    var name : String
+
+    init(name:String, required:Bool = true, validate:Bool = true, requiredErrorMessage:String, validateErrorMessage:String, regexValidation:String) {
+        
+        self.name = name
+        self.required = required
+        self.validate = validate
+        self.requiredErrorMessage = requiredErrorMessage
+        self.validateErrorMessage = validateErrorMessage
+        self.regexValidation = regexValidation
+        
+    }
+}
+
+
 class GVTextField: UITextField {
 
-    var required = false
-    var validade = true
-    var requiredErrorMessage : String?
-    var validateErrorMessage : String?
-    var regexValidation : String?
-    var name : String?
+    var setup:TextFieldSetup?
     
-    required override init(frame: CGRect) {
+    convenience init(setup:TextFieldSetup, frame: CGRect) {
+        self.init(frame: frame)
+        self.setup = setup
+    }
+    
+    override init(frame: CGRect) {
         super.init(frame: frame)
-
     }
     
     required init?(coder aDecoder: NSCoder) {
